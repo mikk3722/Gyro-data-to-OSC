@@ -1,11 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUDP.h>
-#include <OSCMessage.h>
-#include <OSCBundle.h>
+#include <OSCMessage.h> /// https://github.com/CNMAT/OSC
+#include <OSCBundle.h> /// https://github.com/CNMAT/OSC
 #include <Wire.h>
-#include <I2Cdev.h>
-#include <MPU6050.h>
+// requires I2Cdev library: https://github.com/jrowberg/i2cdevlib
+#include "I2Cdev.h"
+// requires MPU-6050 part of the I2Cdev lib: https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/MPU6050
+#include "MPU6050.h"
 
+//esp8266 boards, install version 2.4.0-rc2 
 
 ///////////////////////
 // MPU6050 Setup //
@@ -14,7 +17,7 @@
 // specific I2C addresses may be passed as a parameter here
 // AD0 low = 0x68 (default for InvenSense evaluation board)
 // AD0 high = 0x69
-MPU6050 accelgyro(0X68);
+MPU6050 accelgyro(0x68);
 //MPU6050 accelgyro(0x69); // <– use for AD0 high
 // uncomment “OUTPUT_READABLE_ACCELGYRO” if you want to see a tab-separated
 // list of the accel X/Y/Z and then gyro X/Y/Z values in decimal. Easy to read,
@@ -33,15 +36,15 @@ long sendCount = 0;
 long frameCount = 0;
 
 /***WIFI NAME AND PASSWORD****/
-const char* ssid = "Superheltende2";
-const char* password = "hangthedj";
+const char* ssid = "DKT-KGLSPOT";
+const char* password = "";
 //const char* ssid = “Your SSID name”;
 //const char* password = “YourPassword”;
 
 // A UDP instance to let us send and receive packets over UDP
 WiFiUDP Udp;
 //const IPAddress outIp(192, 168, 1, 95);
-const IPAddress outIp(192,168,0,16);
+const IPAddress outIp(10,17,101,206);
 const unsigned int outPort = 10101;
 
 void sendBundleViaOSC();
@@ -57,7 +60,7 @@ pinMode(2, OUTPUT);
 digitalWrite(2, HIGH);
 // join I2C bus (I2Cdev library doesn’t do this automatically)
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-Wire.begin(4, 5);
+Wire.begin(D2, D1);
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
 Fastwire::setup(400, true);
 #endif
@@ -106,8 +109,8 @@ frameCount = 0;
 }
 if (sendCount > 1000)
 {
-getGyro(); // Print “G: gx, gy, gz”
-getAccel(); // Print “A: ax, ay, az”
+getGyro(); // Print "G: gx, gy, gz"
+getAccel(); // Print "A: ax, ay, az"
 
 sendViaOSC();
 //sendBundleViaOSC();
