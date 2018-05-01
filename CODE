@@ -117,11 +117,11 @@ sendViaOSC();
 
 void sendViaOSC() {
 OSCMessage msg(“/esp/accelX”);
-msg.add(ax);
+msg.add(gx);
 msg.add(“/esp/accelY”);
-msg.add(ay);
+msg.add(gy);
 msg.add(“/esp/accelZ”);
-msg.add(az);
+msg.add(gz);
 Udp.beginPacket(outIp, outPort);
 msg.send(Udp);
 Udp.endPacket();
@@ -150,22 +150,10 @@ bndl.empty(); // empty the bundle to free room for a new one
 void getGyro()
 {
 accelgyro.getRotation(&gx, &gy, &gz);
-Serial.print(“gx:”);
-Serial.println(gx);
-Serial.print(“gy:”);
-Serial.println(gy);
-Serial.print(“gz:”);
-Serial.println(gz);
 
 }
 
 void getAccel()
 {
 accelgyro.getAcceleration(&ax, &ay, &az);
-Serial.print(“ax:”);
-Serial.println(ax);
-Serial.print(“ay:”);
-Serial.println(ay);
-Serial.print(“az:”);
-Serial.println(az);
 }
